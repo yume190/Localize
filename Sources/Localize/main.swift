@@ -1,25 +1,26 @@
 import ArgumentParser
 
-enum FileType: String, EnumerableFlag {
+enum FileType: String, ExpressibleByArgument {
     case csv, excel, ios
 }
 
-enum OutputType: String, EnumerableFlag {
+enum OutputType: String, ExpressibleByArgument {
     case ios, android
 }
 
 struct LocalizeCommand: ParsableCommand {
-    @Flag
-    var fileType: FileType = .csv
+    @Option(name: [.customLong("inputType", withSingleDash: false), .customLong("it", withSingleDash: false)], help: "Type: <excel|csv|ios>.")
+    var inputType: FileType = .csv
     
-    @Option(name: [.customLong("input", withSingleDash: false), .short], help: "input file")
-    var inputPath: String
-    
-    @Flag
+    @Option(name: [.customLong("input", withSingleDash: false), .customShort("i")], help: "Input file path.")
+    var input: String
+
+    @Option(name: [.customLong("outputType", withSingleDash: false), .customLong("ot", withSingleDash: false)], help: "Type: <ios|android>.")
     var outputType: OutputType = .ios
-    
-    @Option(name: [.customLong("output", withSingleDash: false), .short], help: "output file")
-    var outputPath: String = "."
+
+    @Option(name: [.customLong("output", withSingleDash: false), .customShort("o")], help: "Output file.")
+    var output: String = "."
+
     
     func run() throws {
         let provider = try self.provider()
@@ -28,22 +29,22 @@ struct LocalizeCommand: ParsableCommand {
     }
     
     private func provider() throws -> LanguageProvider {
-        switch self.fileType {
+        switch self.inputType {
         case .csv:
-            return try CSVProvider(inputPath)
+            return try CSVProvider(input)
         case .excel:
-            return try ExcelProvider(inputPath)
+            return try ExcelProvider(input)
         case .ios:
-            return IOSProvider(inputPath)
+            return IOSProvider(input)
         }
     }
-    
+
     private func generator() -> LanguageGenerator {
         switch outputType {
         case .ios:
-            return IOSGenerator(outputPath)
+            return IOSGenerator(output)
         case .android:
-            return AndroidGenerator(outputPath)
+            return AndroidGenerator(output)
         }
     }
 }
