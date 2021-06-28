@@ -15,7 +15,7 @@ enum ExcelError: Error {
 
 public struct ExcelProvider: LanguageProvider {
     public let sources: Source
-    init(_ filePath: String, workSheetIndex: Int = 0) throws {
+    public init(_ filePath: String, workSheetIndex: Int = 0) throws {
         guard let file = XLSXFile(filepath: filePath) else {
             throw ExcelError.notFound(path: filePath)
         }
@@ -40,7 +40,7 @@ public struct ExcelProvider: LanguageProvider {
         
         let columnKey = ColumnReference("A")!
         for keyCell in workSheet.cells(atColumns: [columnKey]) {
-            guard keyCell.reference.row != 0 else {continue}
+            guard keyCell.reference.row != 1 else {continue}
             guard let key = keyCell.stringValue(sharedStrings) else {continue}
             for language in languages {
                 let valueCell = workSheet.cells(atColumns: [language.column.column], rows: [keyCell.reference.row]).first

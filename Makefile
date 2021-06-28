@@ -4,3 +4,6 @@ install: build
 
 build:
 	swift build -c release
+
+gen:
+	localize --it csv -i Tests/LocalizeTests/Resource/data.csv --ios --ios_code --android -o Temp

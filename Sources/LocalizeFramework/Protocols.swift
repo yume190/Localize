@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Protocols.swift
 //  
 //
 //  Created by Yume on 2021/6/18.
@@ -22,4 +22,8 @@ public protocol LanguageProvider {
 
 public protocol LanguageGenerator {
     func generate(provider: LanguageProvider) throws
+}
+
+internal protocol CodeGenerator {
+    func generateCode(_ mapping: Mapping) -> String
 }

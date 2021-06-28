@@ -11,11 +11,11 @@ import SwiftCSV
 public struct CSVProvider: LanguageProvider {
     public let sources: Source
     
-    init(_ csv: CSV) {
+    public init(_ csv: CSV) {
         self.sources = CSVProvider.parse(csv)
     }
     
-    init(_ filePath: String) throws {
+    public init(_ filePath: String) throws {
         let url = URL(fileURLWithPath: filePath)
         let csv = try CSV(url: url)
         self.init(csv)

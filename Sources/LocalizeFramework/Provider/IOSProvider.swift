@@ -13,7 +13,7 @@ public struct IOSProvider: LanguageProvider {
     public let sources: Source
     private let path: Path
     
-    init(_ path: String) {
+    public init(_ path: String) {
         self.path = Path(path) ?? Path.cwd/path
 
         let dirs = self.path.find().depth(max: 1).`extension`("lproj").type(.directory)
