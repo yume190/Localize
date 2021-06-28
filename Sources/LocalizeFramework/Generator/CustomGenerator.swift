@@ -29,12 +29,20 @@ struct CustomGeneratorConfig: Decodable {
 extension Array where Element == CustomGeneratorConfig.Replace {
     static let empty: [Element] = []
     static let common: [Element] = [
+        .init(from: "\\t", to: "\t"),
+        .init(from: "\\n", to: "\n"),
+        .init(from: "\\r", to: "\r"),
+        
         /// \ -> \\
         .init(from: "\\", to: "\\\\"),
         /// ' -> \'
         .init(from: "\'", to: "\\\'"),
         /// " -> \"
         .init(from: "\"", to: "\\\""),
+        
+        .init(from: "\t", to: "\\t"),
+        .init(from: "\n", to: "\\n"),
+        .init(from: "\r", to: "\\r"),
     ]
     
     static let xml: [Element] = [
@@ -48,6 +56,12 @@ extension Array where Element == CustomGeneratorConfig.Replace {
     
     static let ios: [Element] = .common
     static let android: [Element] = .common + .xml
+    
+    func replacing(_ value: String) -> String {
+        self.reduce(value) { sum, next in
+            return sum.replacingOccurrences(of: next.from, with: next.to)
+        }
+    }
 }
 
 public enum CustomGeneratorError: Error {
@@ -89,9 +103,7 @@ public struct CustomGenerator: LanguageGenerator, CodeGenerator {
         let content = mapping.sorted(by: { lhs, rhs in
             return lhs.key < rhs.key
         }).map { key, value in
-            let newValue = (self.config.replaces ?? []).reduce(value) { sum, next in
-                return sum.replacingOccurrences(of: next.from, with: next.to)
-            }
+            let newValue = (self.config.replaces ?? []).replacing(value)
             return config.codeFormat
                 .replacingOccurrences(of: "{key}", with: key)
                 .replacingOccurrences(of: "{value}", with: newValue)
