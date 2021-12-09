@@ -7,12 +7,6 @@
 
 import Foundation
 
-//public enum Language {
-//    case english
-//    case chinese
-//    case custom(language: String)
-//}
-
 public typealias Language = String
 public typealias Mapping = [String: String]
 public typealias Source = [Language: Mapping]

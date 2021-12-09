@@ -29,7 +29,7 @@ public struct IOSCodeGenerator: LanguageGenerator {
     
     private func output(_ code: String) -> String {
         return """
-        internal enum L10n {
+        public enum L10n {
         \(code)
         }
         
@@ -71,7 +71,7 @@ public struct IOSCodeGenerator: LanguageGenerator {
                 let params = range.map {"p\($0)"}.joined(separator: ", ")
                 return """
                     /// \(value)
-                    internal static func \(key)(\(args)) -> String {
+                    public static func \(key)(\(args)) -> String {
                         return L10n.trArgs(key: "\(key)", \(params))
                     }
                 """
@@ -79,7 +79,7 @@ public struct IOSCodeGenerator: LanguageGenerator {
             
             return """
                 /// \(value)
-                internal static let \(key): String = L10n.tr(key: "\(key)")
+                public static let \(key): String = L10n.tr(key: "\(key)")
             """
         }.joined(separator: "\n")
     }

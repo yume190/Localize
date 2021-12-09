@@ -88,7 +88,7 @@ final class LocalizeTests: XCTestCase {
     /// "h","<"
     /// "i",">"
     func testAndroidGenerator() throws {
-        let generatedCode = AndroidGenerator2().generateCode(target)
+        let generatedCode = AndroidGenerator().generateCode(target)
         let code = """
         <?xml version="1.0" encoding="utf-8"?>
         <resources>
@@ -116,7 +116,7 @@ final class LocalizeTests: XCTestCase {
     /// "h","<"
     /// "i",">"
     func testIOSGenerator() throws {
-        let generatedCode = IOSGenerator2().generateCode(target)
+        let generatedCode = IOSGenerator().generateCode(target)
         let code = """
         
         "a" = "\\\'";

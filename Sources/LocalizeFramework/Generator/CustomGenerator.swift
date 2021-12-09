@@ -28,6 +28,7 @@ struct CustomGeneratorConfig: Decodable {
 
 extension Array where Element == CustomGeneratorConfig.Replace {
     static let empty: [Element] = []
+    /// escaping character
     static let common: [Element] = [
         .init(from: "\\t", to: "\t"),
         .init(from: "\\n", to: "\n"),
@@ -45,6 +46,7 @@ extension Array where Element == CustomGeneratorConfig.Replace {
         .init(from: "\r", to: "\\r"),
     ]
     
+    /// https://www.advancedinstaller.com/user-guide/xml-escaped-chars.html
     static let xml: [Element] = [
         /// &amp; → & (ampersand, U+0026)
         .init(from: "&", to: "&amp;"),
@@ -52,6 +54,9 @@ extension Array where Element == CustomGeneratorConfig.Replace {
         .init(from: "<", to: "&lt;"),
         /// &gt; → > (greater-than sign, U+003E)
         .init(from: ">", to: "&gt;"),
+        
+        /// &quot; -> "
+        /// &apos; -> '
     ]
     
     static let ios: [Element] = .common

@@ -88,9 +88,9 @@ fileprivate struct LocalizeCommand: ParsableCommand {
         let options = self.outputType.options
         var result: [LanguageGenerator] = []
         
-        if options.contains(.ios) { result.append(IOSGenerator2(output)) }
+        if options.contains(.ios) { result.append(IOSGenerator(output)) }
         if options.contains(.ios_code) { result.append(IOSCodeGenerator(output)) }
-        if options.contains(.android) { result.append(AndroidGenerator2(output)) }
+        if options.contains(.android) { result.append(AndroidGenerator(output)) }
         if options.contains(.custom) {
             try result.append(CustomGenerator(output, customGenerator))
         }
