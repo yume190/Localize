@@ -11,18 +11,20 @@ import Path
 /// output/Localize.swift
 public struct IOSCodeGenerator: LanguageGenerator {
     private let path: Path
+    private let lang: String
     
-    public init(_ path: String = ".") {
+    public init(_ path: String = ".", _ lang: String) {
         self.path = Path(path) ?? Path.cwd/path
+        self.lang = lang
     }
     
     public func generate(provider: LanguageProvider) throws {
-        guard let en = provider.sources["en"] else {return}
+        guard let mapping = provider.sources[lang] ?? provider.sources["en"] else {return}
         
         let targetFile = path/"Localize.swift"
         try targetFile.parent.mkdir(.p)
         
-        let code = extractCode(mapping: en)
+        let code = extractCode(mapping: mapping)
         let result = output(code)
         try result.write(to: targetFile, atomically: true, encoding: .utf8)
     }

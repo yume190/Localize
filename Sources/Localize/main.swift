@@ -63,6 +63,9 @@ fileprivate struct LocalizeCommand: ParsableCommand {
     
     @Option(name: [.customLong("custom_generator", withSingleDash: false)], help: "If output type is `custom`, you need to provide a custom generator yml path.")
     var customGenerator: String?
+    
+    @Option(name: [.customShort("l")], help: "default language description.")
+    var language: String = "en"
 
     
     func run() throws {
