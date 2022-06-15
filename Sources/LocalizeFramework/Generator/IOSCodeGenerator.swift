@@ -31,6 +31,8 @@ public struct IOSCodeGenerator: LanguageGenerator {
     
     private func output(_ code: String) -> String {
         return """
+        import Foundation
+        
         public enum L10n {
         \(code)
         }
