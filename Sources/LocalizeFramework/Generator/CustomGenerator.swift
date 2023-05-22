@@ -9,16 +9,69 @@ import Foundation
 import Path
 import Yams
 
+typealias CodeTransform = (_ key: String, _ value: String) -> String
 struct CustomGeneratorConfig: Decodable {
     /// {language}
     let file: String
     
+    let separator: String
+    
     let codePrefix: String?
     /// {key}, {value}
     let codeFormat: String
+    let codeTransform: CodeTransform?
+    
     let codeSuffix: String?
     
     let replaces: [Replace]?
+    
+    
+    init(file: String, separator: String, codePrefix: String?, codeFormat: String, codeSuffix: String?, replaces: [Replace]?) {
+        self.file = file
+        self.separator = separator
+        self.codePrefix = codePrefix
+        
+        self.codeFormat = codeFormat
+        self.codeTransform = nil
+        
+        self.codeSuffix = codeSuffix
+        self.replaces = replaces
+    }
+    
+    init(file: String, separator: String, codePrefix: String?, codeTransform: @escaping CodeTransform, codeSuffix: String?, replaces: [Replace]?) {
+        self.file = file
+        self.separator = separator
+        self.codePrefix = codePrefix
+        
+        self.codeFormat = ""
+        self.codeTransform = codeTransform
+        
+        self.codeSuffix = codeSuffix
+        self.replaces = replaces
+    }
+    
+    
+    
+    enum CodingKeys: CodingKey {
+        case file
+        case separator
+        case codePrefix
+        case codeFormat
+        case codeSuffix
+        case replaces
+    }
+
+    init(from decoder: Decoder) throws {
+        let container: KeyedDecodingContainer<CustomGeneratorConfig.CodingKeys> = try decoder.container(keyedBy: CustomGeneratorConfig.CodingKeys.self)
+        self.file = try container.decode(String.self, forKey: CustomGeneratorConfig.CodingKeys.file)
+        self.separator = try container.decode(String.self, forKey: CustomGeneratorConfig.CodingKeys.separator)
+        self.codePrefix = try container.decode(String?.self, forKey: CustomGeneratorConfig.CodingKeys.codePrefix)
+        self.codeFormat = try container.decode(String.self, forKey: CustomGeneratorConfig.CodingKeys.codeFormat)
+        self.codeTransform = nil
+        self.codeSuffix = try container.decode(String?.self, forKey: CustomGeneratorConfig.CodingKeys.codeSuffix)
+        self.replaces = try container.decode([Replace]?.self, forKey: CustomGeneratorConfig.CodingKeys.replaces)
+    }
+    
     
     struct Replace: Decodable {
         let from: String
@@ -109,10 +162,15 @@ public struct CustomGenerator: LanguageGenerator, CodeGenerator {
             return lhs.key < rhs.key
         }).map { key, value in
             let newValue = (self.config.replaces ?? []).replacing(value)
-            return config.codeFormat
-                .replacingOccurrences(of: "{key}", with: key)
-                .replacingOccurrences(of: "{value}", with: newValue)
-        }.joined(separator: "\n")
+            if let transform = config.codeTransform {
+                return transform(key, newValue)
+            } else {
+                return config.codeFormat
+                    .replacingOccurrences(of: "{key}", with: key)
+                    .replacingOccurrences(of: "{value}", with: newValue)
+            }
+
+        }.joined(separator: config.separator)
         
         return """
         \(self.config.codePrefix ?? "")

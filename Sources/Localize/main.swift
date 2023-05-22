@@ -9,12 +9,13 @@ fileprivate enum InputType: String, ExpressibleByArgument, Codable {
 
 // EnumerableFlag -> @Flag
 fileprivate enum OutputType: String, EnumerableFlag, Codable {
-    case ios, ios_code, android, custom
+    case ios, ios_code, android, arb, custom
     var option: Options {
         switch self {
         case .ios: return .ios
         case .ios_code: return .ios_code
         case .android: return .android
+        case .arb: return .arb
         case .custom: return .custom
         }
     }
@@ -25,7 +26,8 @@ fileprivate enum OutputType: String, EnumerableFlag, Codable {
         static let ios = Options(rawValue: 1 << 0)
         static let ios_code = Options(rawValue: 1 << 1)
         static let android = Options(rawValue: 1 << 2)
-        static let custom = Options(rawValue: 1 << 3)
+        static let arb = Options(rawValue: 1 << 3)
+        static let custom = Options(rawValue: 1 << 4)
     }
 }
 
@@ -54,8 +56,7 @@ fileprivate struct LocalizeCommand: ParsableCommand {
     @Option(name: [.customLong("input", withSingleDash: false), .customShort("i")], help: "Input file path.")
     var input: String
 
-//    @Option(name: [.customLong("outputType", withSingleDash: false), .customLong("ot", withSingleDash: false)], help: "Type: <ios|ios_code|android|custom>.")
-    @Flag(help: "Output Type: <ios|ios_code|android|custom>.")
+    @Flag(help: "Output Type: <ios|ios_code|android|arb|custom>.")
     var outputType: [OutputType] = [.ios]
 
     @Option(name: [.customLong("output", withSingleDash: false), .customShort("o")], help: "Output file.")
@@ -67,7 +68,6 @@ fileprivate struct LocalizeCommand: ParsableCommand {
     @Option(name: [.customShort("l")], help: "default language description.")
     var language: String = "en"
 
-    
     func run() throws {
         let provider = try self.provider()
         let generators = try self.generators()
@@ -94,9 +94,11 @@ fileprivate struct LocalizeCommand: ParsableCommand {
         if options.contains(.ios) { result.append(IOSGenerator(output)) }
         if options.contains(.ios_code) { result.append(IOSCodeGenerator(output, language)) }
         if options.contains(.android) { result.append(AndroidGenerator(output)) }
+        if options.contains(.arb) { result.append(ArbGenerator(output)) }
         if options.contains(.custom) {
             try result.append(CustomGenerator(output, customGenerator))
         }
+        
         return result
     }
 }

@@ -13,6 +13,7 @@ public struct AndroidGenerator: LanguageGenerator, CodeGenerator {
     public init(_ path: String = ".") {
         let config = CustomGeneratorConfig(
             file: "values-{language}/strings.xml",
+            separator: "\n",
             codePrefix: """
             <?xml version="1.0" encoding="utf-8"?>
             <resources>

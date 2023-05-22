@@ -7,3 +7,15 @@ build:
 
 gen:
 	localize --it csv -i Tests/LocalizeTests/Resource/data.csv --ios --ios_code --android -o Temp
+
+	localize \
+		--it csv \
+		-i Tests/LocalizeTests/Resource/data.csv \
+		--arb \
+		-o Temp
+
+	localize \
+		--it csv \
+		-i Tests/LocalizeTests/Resource/arb.csv \
+		--arb \
+		-o Temp

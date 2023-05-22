@@ -14,6 +14,7 @@ public struct IOSGenerator: LanguageGenerator, CodeGenerator {
     public init(_ path: String = ".") {
         let config = CustomGeneratorConfig(
             file: "{language}.lproj/Localizable.strings",
+            separator: "\n",
             codePrefix: nil,
             codeFormat: """
             "{key}" = "{value}";

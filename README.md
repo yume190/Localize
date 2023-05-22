@@ -22,7 +22,3 @@ A description of this package.
 |\t   |\t    |
 |""   |"     |
 |\""  |\"    |
-
-
-
-
