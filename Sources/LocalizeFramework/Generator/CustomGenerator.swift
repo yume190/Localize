@@ -111,6 +111,24 @@ extension Array where Element == CustomGeneratorConfig.Replace {
         /// &quot; -> "
         /// &apos; -> '
     ]
+  
+  static let arb: [Element] = [
+      .init(from: "\\t", to: "\t"),
+      .init(from: "\\n", to: "\n"),
+      .init(from: "\\r", to: "\r"),
+      
+      /// \ -> \\
+      .init(from: "\\", to: "\\\\"),
+      /// FIX
+      /// ~~' -> \'~~ to ' -> '
+      //  .init(from: "\'", to: "\\\'"),
+      /// " -> \"
+      .init(from: "\"", to: "\\\""),
+      
+      .init(from: "\t", to: "\\t"),
+      .init(from: "\n", to: "\\n"),
+      .init(from: "\r", to: "\\r"),
+  ]
     
     static let ios: [Element] = .common
     static let android: [Element] = .common + .xml

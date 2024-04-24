@@ -24,7 +24,7 @@ public struct ArbGenerator: LanguageGenerator, CodeGenerator {
             codePrefix: "{",
             codeTransform: Self.transform,
             codeSuffix: "}",
-            replaces: .ios
+            replaces: .arb
         )
         self.generator = CustomGenerator(path, config)
     }
@@ -38,21 +38,22 @@ public struct ArbGenerator: LanguageGenerator, CodeGenerator {
     }
     
     private static func transform(_ key: String, _ value: String) -> String {
+        let newKey = key.lowercased()
         guard let transform = Self.extract(value) else {
             return """
-            "\(key)": "\(value)",
+            "\(newKey)": "\(value)",
             """.indent(1, "  ")
         }
         
         guard !transform.placeholders.isEmpty else {
             return """
-            "\(key)": "\(transform.transformedValue)"
+            "\(newKey)": "\(transform.transformedValue)"
             """.indent(1, "  ")
         }
         
         return """
-        "\(key)": "\(transform.transformedValue)",
-        "@\(key)": {
+        "\(newKey)": "\(transform.transformedValue)",
+        "@\(newKey)": {
           "placeholders": {
         \(transform.placeholders.indent(2, "  "))
           }
